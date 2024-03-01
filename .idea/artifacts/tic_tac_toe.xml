@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="tic-tac-toe">
+    <output-path>$PROJECT_DIR$/out/artifacts/tic_tac_toe</output-path>
+    <root id="root">
+      <element id="archive" name="tic_tac_toe.jar">
+        <element id="module-output" name="tic-tac-toe" />
+      </element>
+    </root>
+  </artifact>
+</component>
