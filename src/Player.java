@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Random;
@@ -38,28 +39,106 @@ class Computer extends Player {
         super(board1, turn1);
     }
 
-        public int[] GetInput() {
-        int[] coord = new int[2];
-        int r1 = rand.nextInt(0,3);
-        int r2 = rand.nextInt(0,3);
-        coord[0] = r1;
-        coord[1] = r2;
-        while (board.getBoard()[coord[0]][coord[1]] != 0){
-            r1 = rand.nextInt(0, 3);
-            r2 = rand.nextInt(0, 3);
-            coord[0] = r1;
-            coord[1] = r2;
-        }
-        return coord;
-    }
-//    public int[] GetInput() { // Check all possible outcomes approach b/c tic-tac-toe is so small
-//        // Ex Board:
-//        // [1, 0, -1]
-//        // [1, 1, -1]
-//        // [-1,0, -1]
-//
-//
+//        public int[] GetInput() {
+//        int[] coord = new int[2];
+//        int r1 = rand.nextInt(0,3);
+//        int r2 = rand.nextInt(0,3);
+//        coord[0] = r1;
+//        coord[1] = r2;
+//        while (board.getBoard()[coord[0]][coord[1]] != 0){
+//            r1 = rand.nextInt(0, 3);
+//            r2 = rand.nextInt(0, 3);
+//            coord[0] = r1;
+//            coord[1] = r2;
+//        }
+//        return coord;
 //    }
+
+    public int MiniMax(Board node, boolean maximize ) {
+        if (node.getWinner() != 0) {
+            if (node.getWinner() == 2) {
+                return 0;
+            } else {
+                return node.getWinner();
+            }
+        }
+        if (maximize) {
+            int maxEval = -1;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    Board child = new Board();
+                    child.setBoard(node.getBoard());
+                    if (node.getBoard()[i][j] == 0) {
+                        child.Move(false, j, i);
+                        maxEval = Math.max(maxEval, MiniMax(child, false));
+                    }
+
+                }
+            }
+            return maxEval;
+        } else {
+            int minEval = 1;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    Board child = new Board();
+                    child.setBoard(node.getBoard());
+                    if (node.getBoard()[i][j] == 0) {
+                        child.Move(true, j, i);
+                        minEval = Math.min(minEval, MiniMax(child, true));
+                    }
+                }
+            }
+            return minEval;
+        }
+    }
+    public int[] GetInput() { // Check all possible outcomes approach b/c tic-tac-toe is so small
+        // Ex Board:
+        // [1, 0, -1]
+        // [1, 1, -1]
+        // [-1,0, -1]
+
+        if (turn == 1) {
+            int maxEval = -2; // so that we always get a move
+            int[] bestMove = new int[2];
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    Board child = new Board();
+                    child.setBoard(board.getBoard());
+                    if (board.getBoard()[i][j] == 0) {
+                        child.Move(false, j, i);
+                        int score = MiniMax(child, false);
+                        if (score > maxEval) {
+                            maxEval = score;
+                            bestMove[0] = j;
+                            bestMove[1] = i;
+                        }
+
+                    }
+                    return bestMove;
+                }
+            }
+        } else {
+            int minEval = 2; // so that we always get a move
+            int[] bestMove = new int[2];
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    Board child = new Board();
+                    child.setBoard(board.getBoard());
+                    if (board.getBoard()[i][j] == 0) {
+                        child.Move(true, j, i);
+                        int score = MiniMax(child, true);
+                        if (score < minEval) {
+                            minEval = score;
+                            bestMove[0] = j;
+                            bestMove[1] = i;
+                        }
+                    }
+                    return bestMove;
+                }
+            }
+        }
+        return new int[2]; // no error handling like a boss
+    }
 }
 
 class NetworkPlayer extends Player {

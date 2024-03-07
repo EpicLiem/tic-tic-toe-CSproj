@@ -7,9 +7,9 @@ public class Board {
     private int[][] board = new int[3][3]; // was gonna do bitmap but 9 isn't a great number
     private String boardRep =
             """
-                    ---
-                    ---
-                    ---
+                    - - -
+                    - - -
+                    - - -
                     """;
 
     public Board() {
@@ -27,6 +27,7 @@ public class Board {
         } else {
             board[y][x] = -1;
         }
+        System.out.println(boardRep);
         return "Success";
     }
     public String Move(boolean turn, int x, int y, boolean sendMove) {
